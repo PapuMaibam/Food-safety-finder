@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Product Safety Finder</title>
+  <style>   
+    *{
+    box-sizing:border-box;
+    font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;
+    }
+    body{
+    margin:0;
+    min-height:100vh;
+    background:linear-gradient(180deg,#071126 0%, #071b2a 100%);
+    color:#e6eef6;
+    padding:28px;
+    background: #0f1724;
+    }
+    .app{
+    max-width:980px;
+    margin:0 auto;
+    }
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:18px;
+    }
+    h1{
+      font-size:20px;
+      margin:0;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:18px;
+    }
+    .card{
+      background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
+      padding:14px;
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(2,6,23,0.6);
+    }
+    label{
+      display:block;
+      font-size:13px;
+      color:#94a3b8;
+      margin-bottom:6px;
+    }
+    input[type=text],select,textarea{
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.06);
+      background:transparent;
+      color:inherit;
+    }
+    .btn{
+      display:inline-block;
+      padding:10px 12px;
+      border-radius:10px;
+      border:none;
+      background:#06b6d4;
+      color:#012;
+      cursor:pointer;
+    }
+    .btn.ghost{
+      background:transparent;
+      color: white;
+      border:1px solid rgba(255,255,255,0.06);
+    }
+    .cat-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:10px 0;
+    }
+    .chip{
+      padding:8px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.03);
+      cursor:pointer;
+      font-size:13px;
+    }
+    .chip.active{
+      background:#06b6d4;
+      color:#012;
+    }
+    .results{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .product{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      padding:10px;
+      border-radius:10px;
+    }
+    .product .meta{max-width:60%}
+    .badge{
+      padding:6px 8px;
+      border-radius:8px;
+      font-weight:600;
+    }
+    .safe{
+      background:rgba(16,185,129,0.12);
+      color:#10b981;
+    }
+    .warn{
+      background:rgba(245,158,11,0.12);
+      color:#f59e0b;
+    }
+    .danger{
+      background:rgba(239,68,68,0.12);
+      color:#ef4444;
+    }
+    .scanner{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    video{
+      width:100%;
+      border-radius:8px;
+      background:#000;
+    }
+    .small{
+      font-size:13px;
+      color:#94a3b8;
+    }
+    footer{
+      margin-top:18px;
+      color:#94a3b8;
+      font-size:13px;
+    }
+    @media (max-width:900px){
+      .grid{grid-template-columns:1fr}
+    .card{padding:12px}
+  }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#06b6d4,#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700">PF</div>
+      <div>
+        <h1>Product Safety Finder — Grocery · Drinks · Snacks · Beauty</h1>
+        <div class="small">Search products, scan barcode (camera) or type UPC/name.</div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <div>
+          <label for="search">Search by product name or UPC</label>
+          <input id="search" type="text" placeholder="Type name or paste UPC (e.g. 012345678905)" />
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Category filter</label>
+          <div class="cat-list" id="categories"></div>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Scanner</label>
+          <div class="scanner card" style="padding:8px">
+            <div id="scannerArea">
+              <video id="video" playsinline></video>
+              <div class="small" id="scannerHint">Click "Start Scanner" to open camera (uses BarcodeDetector if supported).</div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:6px">
+              <button id="startScan" class="btn">Start Scanner</button>
+              <button id="stopScan" class="btn ghost">Stop</button>
+              <button id="manualUPC" class="btn ghost">Manual UPC</button>
+            </div>
+            <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+              <input id="manualInput" type="text" placeholder="Enter UPC or barcode" />
+              <button id="manualSearch" class="btn">Find</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <label>Add sample product (dev/test)</label>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <input id="newName" type="text" placeholder="Name" />
+            <input id="newUPC" type="text" placeholder="UPC" style="width:110px" />
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <select id="newCat">
+              <option value="grocery">Grocery</option>
+              <option value="drinks">Drinks/Water</option>
+              <option value="snacks">Snacks</option>
+              <option value="cookies">Cookies</option>
+              <option value="beauty">Beauty & Wellness</option>
+            </select>
+            <select id="newSafety">
+              <option value="safe">Safe</option>
+              <option value="warn">Caution</option>
+              <option value="danger">Unsafe</option>
+            </select>
+            <button id="addProduct" class="btn">Add</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <label class="small">Results</label>
+            <div id="summary" style="font-weight:700"></div>
+          </div>
+          <div>
+            <label class="small">Sort</label>
+            <select id="sortBy">
+              <option value="relevance">Relevance</option>
+              <option value="safety">Safety (unsafe first)</option>
+              <option value="name">Name</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:12px" class="results" id="results"></div>
+
+        <footer>
+          Notes: This is a demo. Use the manual-UPC box to try scanning outcomes on devices without BarcodeDetector. The safety determinations come from a small local dataset — extend it to call an API for real data.
+        </footer>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
