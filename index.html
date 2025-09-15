@@ -12,10 +12,10 @@
     body{
     margin:0;
     min-height:100vh;
-    background:linear-gradient(180deg,#071126 0%, #071b2a 100%);
+    background:linear-gradient(180deg,#4179a4 0%, #240829 100%);
     color:#e6eef6;
     padding:28px;
-    background: #0f1724;
+    
     }
     .app{
     max-width:980px;
@@ -37,7 +37,7 @@
       gap:18px;
     }
     .card{
-      background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);
+      background:linear-gradient(180deg,rgba(255, 255, 255, 0.02),transparent);
       padding:14px;
       border-radius:12px;
       box-shadow:0 6px 18px rgba(2,6,23,0.6);
@@ -45,7 +45,7 @@
     label{
       display:block;
       font-size:13px;
-      color:#94a3b8;
+      color:#ffffff;
       margin-bottom:6px;
     }
     input[type=text],select,textarea{
@@ -61,7 +61,7 @@
       padding:10px 12px;
       border-radius:10px;
       border:none;
-      background:#06b6d4;
+      background:#93d406;
       color:#012;
       cursor:pointer;
     }
@@ -84,7 +84,7 @@
       font-size:13px;
     }
     .chip.active{
-      background:#06b6d4;
+      background:#904bda;
       color:#012;
     }
     .results{
@@ -130,13 +130,12 @@
     }
     .small{
       font-size:13px;
-      color:#94a3b8;
+      color:#ffffff;
     }
-    footer{
-      margin-top:18px;
-      color:#94a3b8;
-      font-size:13px;
+    ::placeholder{
+      color: #000000;
     }
+    
     @media (max-width:900px){
       .grid{grid-template-columns:1fr}
     .card{padding:12px}
@@ -146,18 +145,16 @@
 <body>
   <div class="app">
     <header>
-      <div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#06b6d4,#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700">PF</div>
       <div>
-        <h1>Product Safety Finder — Grocery · Drinks · Snacks · Beauty</h1>
-        <div class="small">Search products, scan barcode (camera) or type UPC/name.</div>
+        <h1>Product Safety Finder </h1>        
       </div>
     </header>
 
     <div class="grid">
       <div class="card">
         <div>
-          <label for="search">Search by product name or UPC</label>
-          <input id="search" type="text" placeholder="Type name or paste UPC (e.g. 012345678905)" />
+          <label for="search">Search by product name</label>
+          <input id="search" type="text" placeholder="Type name or paste" />
         </div>
 
         <div style="margin-top:12px">
@@ -170,7 +167,6 @@
           <div class="scanner card" style="padding:8px">
             <div id="scannerArea">
               <video id="video" playsinline></video>
-              <div class="small" id="scannerHint">Click "Start Scanner" to open camera (uses BarcodeDetector if supported).</div>
             </div>
             <div style="display:flex;gap:8px;margin-top:6px">
               <button id="startScan" class="btn">Start Scanner</button>
@@ -227,9 +223,7 @@
 
         <div style="margin-top:12px" class="results" id="results"></div>
 
-        <footer>
-          Notes: This is a demo. Use the manual-UPC box to try scanning outcomes on devices without BarcodeDetector. The safety determinations come from a small local dataset — extend it to call an API for real data.
-        </footer>
+        
       </div>
     </div>
   </div>
